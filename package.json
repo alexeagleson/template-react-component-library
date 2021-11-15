@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/alexeagleson"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple template for a custom React component library",
   "scripts": {
     "rollup": "rollup -c"
