@@ -1,6 +1,9 @@
 {
-  "name": "template-react-component-library",
-  "version": "0.0.1",
+  "name": "@alexeagleson/template-react-component-library",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/alexeagleson"
+  },
+  "version": "0.0.2",
   "description": "A simple template for a custom React component library",
   "scripts": {
     "rollup": "rollup -c"
