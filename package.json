@@ -7,7 +7,9 @@
   "description": "A simple template for a custom React component library",
   "scripts": {
     "rollup": "rollup -c",
-    "test": "jest"
+    "test": "jest",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "author": "Alex Eagleson",
   "license": "ISC",
@@ -19,10 +21,15 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-typescript": "^8.3.0",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/react": "^6.3.12",
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.34",
     "babel-jest": "^27.3.1",
+    "babel-loader": "^8.2.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "rollup": "^2.60.0",
@@ -40,5 +47,6 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "dependencies": {}
 }

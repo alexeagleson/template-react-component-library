@@ -6,6 +6,7 @@ This project assumes you are familiar with and have installed:
 * NPM (NPM is installed when you install Node.js on your machine)
 * Installing packages (presume you know how to add packages to a Javascript project with `npm install`)
 * Bash terminal (or another terminal you are comfortable with for running commands)
+* Git (we will be creating a git repository on our machine and publishing it to Github, though all instructions will be provided on how to follow along)
 * React (how to create simple components using JSX)
 * Typescript (how to create an object interface with simple properties)
 
@@ -50,7 +51,7 @@ Begin by creating `Button.tsx`:
 ```tsx
 import React from "react";
 
-interface ButtonProps {
+export interface ButtonProps {
   label: string;
 }
 
@@ -468,7 +469,7 @@ Next we will indicate that these styles are meant to be applied on our button co
 import React from "react";
 import "./Button.css";
 
-interface ButtonProps {
+export interface ButtonProps {
   label: string;
 }
 
@@ -755,12 +756,86 @@ module.exports = {
 };
 ```
 
+Now finally if you've followed up step up to this point, you can run:
+
+```bash
+npm run test
+```
+
+And you will be treated to a successful test!
+
+![Jest test](https://res.cloudinary.com/dqse2txyi/image/upload/v1637096794/template-react-component-library/jest_rw30ou.png)
+
 ### Adding Storybook
 
+Storybook is a a tool for visualizing UI components outside of your site / application.  It's fantastic for prototyping and testing different visual states of components to ensure they work the way they are designed to, without the extra overhead of having other unrelated components on the screen.  
+
+It also gives you an easy way to see and use your components while working on them in your library project, without having to build an unnecessary testing page just to display them.  
+
+Initializing Storybook is very easy.  To set it up and configure it automatically we just run the following command:
+
+```bash
+npx sb init
+```
+
+Unlike some of the other tools we have added so far, Storybook much more of a "batteries included" kind of package that handles most of the initial setup for you.  It will even add the `scripts` to run it into your `package.json` file automatically.
+
+You will also notice that it creates a `stories` directory in your `src` directory.  This directory is full of pre-built templates for you to use as an example of how to create your own stories.  I recommend you don't delete these until you become familiar with Storybook and how to write your own stories, having them close by will be very handy.
+
+Now let's create a simple story for our button.  Create a new file in the `Button` directory called `Button.stories.tsx`:
+
+`src/components/Button/Button.stories.tsx`
+```tsx
+import React from "react";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
+import Button from "./Button";
+
+// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+export default {
+  title: "ReactComponentLibrary/Button",
+  component: Button,
+} as ComponentMeta<typeof Button>;
+
+// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
+
+export const HelloWorld = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+HelloWorld.args = {
+  label: "Hello world!",
+};
+
+export const ClickMe = Template.bind({});
+ClickMe.args = {
+  label: "Click me!",
+};
+```
+
+This might be a little overwhelming at first, but when you go through it piece by piece you should see it's fairly straightforward.
+
+* The _default export_ defines where the button will appear in the Storybook.  I've chosen **ReactComponentLibrary** as a simple name to group our custom components together separately from the examples.
+
+* The _Template_ determines which component is actually being rendered, and which default args/props to apply to it.
+
+* The _Template.bind_ objects are instances or example states of the component.  So in a real project you might have something like "LargeButton" and "SmallButton".  Since our button is always big I've just used an example of testing the button with two different labels.
+
+If you look at your `package.json` file you'll see that Storybook has already added a `storybook` and `storybook-build` script.  The first will host the Storybook application locally for quick and easy testing.  The second one will build a static HTML/JS bundle that can easily be hosted on a remote server, so all members of your team can try your components.  
+
+For now let's just run:
+
+```bash
+npm run storybook
+```
+
+You will be greeted with a friendly interface that lets you navigate through the example components as well as your own custom button in real time.  Click between them to check out the different states that you have created.
+
+![Storybook example](https://res.cloudinary.com/dqse2txyi/image/upload/v1637099177/template-react-component-library/storybook_dxv3qb.png)
+
+There is plenty more to learn about Storybook, make sure to read through the [documentation](https://storybook.js.org/docs/react/get-started/introduction).
 
 ### Wrapping Up
 
-You should now have a good understanding about how to create React component libraries.
+You should now have a good understanding about how to create your own React component library.  Doing so can not only teach you a lot about how the Javascript package management ecosystem works, but it can be a great way to make code that you use across multiple projects easily available with a simple command.
 
 Please check some of my other learning tutorials.  Feel free to leave a comment or question and share with others if you find any of them helpful:
 
@@ -768,7 +843,7 @@ Please check some of my other learning tutorials.  Feel free to leave a comment 
 
 - [ESLint](https://dev.to/alexeagleson/understanding-the-modern-web-stack-linters-eslint-59pm)
 
-- [Prettier]()
+- [Prettier](https://dev.to/alexeagleson/understanding-the-modern-web-stack-prettier-214j)
 
 - [Babel](https://dev.to/alexeagleson/building-a-modern-web-stack-babel-3hfp)
 
