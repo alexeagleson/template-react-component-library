@@ -1,3 +1,14 @@
+### Prerequisites & Setup
+
+This project assumes you are familiar with and have installed:
+
+* Code editor / IDE (this tutorial uses VS Code but any IDE will work)
+* NPM (NPM is installed when you install Node.js on your machine)
+* Installing packages (presume you know how to add packages to a Javascript project with `npm install`)
+* Bash terminal (or another terminal you are comfortable with for running commands)
+* React (how to create simple components using JSX)
+* Typescript (how to create an object interface with simple properties)
+
 First we will initialize our project.  
 
 ```bash
@@ -39,14 +50,18 @@ Begin by creating `Button.tsx`:
 ```tsx
 import React from "react";
 
-const Button = () => {
-  return <button>Hello world!</button>;
+interface ButtonProps {
+  label: string;
+}
+
+const Button = (props: ButtonProps) => {
+  return <button>{props.label}</button>;
 };
 
 export default Button;
 ```
 
-To keep things simple we will just export a pre-built button that says _Hello world!_.  We can add more complexity and styles to our components once we have confirmed that our basic template is setup correctly.
+To keep things simple we will just export a button that takes a single prop called `label`.  We can add more complexity and styles to our components once we have confirmed that our basic template is setup correctly.
 
 After our button, we update the index file inside our Button directory:
 
@@ -273,13 +288,13 @@ _(If you received an error make sure to read it closely to try and identify the 
 
 Now that we've created our component library, we need a way to allow ourselves (or others) to download and install it.  We will be publishing our library via NPM through hosting on Github.  First before anything else we need to create a repository for our library.  
 
-Create a new repository on Github.  I have titled mine `template-react-component-library'.  Then follow the steps to initialize your project as a git project, and push to your new repository.
+Create a new repository on Github.  I have titled mine `template-react-component-library`.  Then follow the steps to initialize your project as a git project, and push to your new repository.
 
 Log into Github and create a new repository called whatever you like.  For this example I've titled it `template-react-component-library` and it will be available for everyone to clone and use publicly.  You can choose to make your library private if you like, methods described in this tutorial will work for private packages as well (in case you are making a library for your company for example).
 
 Once the repository is created we need to initialize git within our project locally.  Run the following command:
 
-```bash
+```
 git init
 ```
 
@@ -321,7 +336,7 @@ For more information about this configuration file [read this](https://docs.npmj
 Once you have created the file, edit it to include the following information:
 
 `~/.npmrc`
-```npmrc
+```
 registry=https://registry.npmjs.org/
 @YOUR_GITHUB_USERNAME:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=YOUR_AUTH_TOKEN
@@ -338,7 +353,7 @@ Click _**Generate new token**_.  Give it a name that suits the project you are b
 
 The most important thing is to click the `write:packages` access value.  This will give your token permission to read & write packages to your Github account, which is wht we need.  
 
-![Generate new token](https://i.imgur.com/J8aBrxS.png)
+![Generate new token](https://res.cloudinary.com/dqse2txyi/image/upload/v1637028886/template-react-component-library/accesstoken_hl9kr3.png)
 
 Once you are done you can click to create the token.  Github will **ONLY SHOW YOU THE TOKEN ONCE**.  When you close/refresh the page it will be gone, so make sure to copy it to a secure location (perhaps a password manager if you use one).
 
@@ -412,11 +427,10 @@ Lets add it!  The simplest example to update `src/App.tsx` is:
 `src/App.tsx`
 ```tsx
 import React from "react";
-import "./App.css";
 import { Button } from "@alexeagleson/template-react-component-library";
 
 function App() {
-  return <Button />;
+  return <Button label="Hello world!"/>;
 }
 
 export default App;
@@ -425,8 +439,6 @@ export default App;
 And when we run `npm run start` again, there tucked up in the corner is our _Hello world!_ button.  
 
 ![Hello world button](https://res.cloudinary.com/dqse2txyi/image/upload/v1637017283/helloworldbutton_m1qeja.png)
-
-You can validate that we've imported and used the one from our library because we are simple using it as `<Button />` in our code, the "Hello world!" content comes from the component definition in the library itself.  
 
 And that's it!  Congratulations!  You now have all the tools you need to create and distribute a React component library using Typescript!  At this point you end the tutorial and continue on your own if you wish.  
 
@@ -454,10 +466,14 @@ Next we will indicate that these styles are meant to be applied on our button co
 `src/components/Button/Button.tsx`
 ```tsx
 import React from "react";
-import './Button.css';
+import "./Button.css";
 
-const Button = () => {
-  return <button>Hello world!</button>;
+interface ButtonProps {
+  label: string;
+}
+
+const Button = (props: ButtonProps) => {
+  return <button>{props.label}</button>;
 };
 
 export default Button;
@@ -551,20 +567,224 @@ And you'll be treated to a giant button component from our library that now supp
 
 ![Large Button](https://res.cloudinary.com/dqse2txyi/image/upload/v1637028364/template-react-component-library/helloworldbuttonbig_lyapwq.png)
 
+
 ### Optimizations
 
-terser
+There are a couple of easy optimizations we can make with this setup.  The first is to add a plugin called [terser](https://www.npmjs.com/package/rollup-plugin-terser) that will minify our bundle and reduce the overall file size.  
 
-PEER DEPENDENCIES
+The other is to update some of our dependencies to `peerDependencies`.  With rollup's [peer dependencies](https://www.npmjs.com/package/rollup-plugin-peer-deps-external) plugin we can tell the projects that are using our libraries which dependencies are required (like React) but won't actually bundle a copy of React with the library itself.  If the consumer already has React in their project it will use that, otherwise it will get installed when they run `npm install`.
+
+First we will install these two plugins:
+
+```bash
+npm install rollup-plugin-peer-deps-external rollup-plugin-terser --save-dev
+```
+
+Then we will update our rollup config:
+
+`rollup.config.js`
+```js
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
+import postcss from "rollup-plugin-postcss";
+import dts from "rollup-plugin-dts";
+
+//NEW
+import { terser } from "rollup-plugin-terser";
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+
+const packageJson = require("./package.json");
+
+export default [
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        file: packageJson.main,
+        format: "cjs",
+        sourcemap: true,
+      },
+      {
+        file: packageJson.module,
+        format: "esm",
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      // NEW
+      peerDepsExternal(),
+
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: "./tsconfig.json" }),
+      postcss(),
+
+      // NEW
+      terser(),
+    ],
+  },
+  {
+    input: "dist/esm/types/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "esm" }],
+    plugins: [dts()],
+    external: [/\.css$/],
+  },
+];
+```
+
+Then we move React from `devDependencies` to `peerDependencies` in our `package.json file:
+
+`package.json`
+```json
+{
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@types/react": "^17.0.34",
+    "rollup": "^2.60.0",
+    "rollup-plugin-dts": "^4.0.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.4.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  ...
+```
+
+### Adding tests
+
+To add tests for our components we are going to install [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), and to run those tests we will install [Jest](https://jestjs.io/).
+
+```bash
+npm install @testing-library/react jest @types/jest --save-dev
+```
+
+Inside of our Button directory, create a new file called `Button.test.tsx`
+
+`src/components/Button/Button.test.tsx`
+```tsx
+import React from "react";
+import { render } from "@testing-library/react";
+
+import Button from "./Button";
+
+describe("Button", () => {
+  test("renders the Button component", () => {
+    render(<Button label="Hello world!" />);
+  });
+});
+```
+
+What this will do is render our button on a non-browser DOM implementation and make sure that it mounts properly.  This is a very simple test, but it serves as a good example of the syntax you can use to get started.  To go deeper in depth read further in the React Testing Library [documentation](https://testing-library.com/docs/).
+
+Before we can run the tests we need to configure jest, and create a test runner script in our `package.json`.  We'll start with the configuration, create a `jest.config.js` file in the root of the project:
+
+`jest.config.js`
+```js
+module.exports = {
+  testEnvironment: "jsdom",
+};
+```
+
+This tells Jest to use [jsdom](https://github.com/jsdom/jsdom) as our DOM implementation.
+
+Next update your `package.json` file:
+
+`package.json`
+```json
+{
+  "scripts": {
+    "rollup": "rollup -c",
+    "test": "jest"
+  },
+  ...
+}
+```
+
+Now we can run our tests with:
+
+```bash
+npm run test
+```
+
+Unfortunately we are going to get an error!  The error is when our JSX code is encountered.  If you recall we used Typescript to handle JSX with our rollup config, and a Typescript plugin for rollup to teach it how to do that.  We have no such setup in place for Jest unfortunately.
+
+We are going to need to install [Babel](https://babeljs.io/) to handle our JSX transformations.  We will also need to install a Jest plugin called `babel-jest` that tells Jest to use Babel!  Let's install them now, along with Babel plugins to handle our Typescript and React code.  The total collection of all of them looks like:
+
+```bash
+npm install @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript babel-jest --save-dev
+```
+
+Now we create our Babel configuration file in the root of our project, which tells Babel to use all these plugins we've just installed:
+
+`babel.config.js`
+```js
+module.exports = {
+  presets: [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-typescript",
+  ],
+};
+```
+
+Now we should be able to run our tests with `npm run test`... but... there is one more problem!
+
+You'll get an error saying the `import` of the `.css` file isn't understood.  That makes sense because, again, we configured a `postcss` plugin for rollup to handle that, but we did no such thing for Jest.
+
+The final step will be to install a package called [identity-obj-proxy](https://www.npmjs.com/package/identity-obj-proxy).  What this does is allow you to configure Jest to treat any type of imports as just generic objects.  So we'll do that with CSS files so we don't get an error.
+
+```bash
+npm install identity-obj-proxy --save-dev 
+```
+
+We need to update our Jest config tp include the `moduleNameMapper` property.  We've also added `less` and `scss` in there for good measure in case you want to expand your project later to use those:
+
+`jest.config.js`
+```js
+module.exports = {
+  testEnvironment: "jsdom",
+  moduleNameMapper: {
+    ".(css|less|scss)$": "identity-obj-proxy",
+  },
+};
+```
+
+### Adding Storybook
+
+
+### Wrapping Up
+
+You should now have a good understanding about how to create React component libraries.
+
+Please check some of my other learning tutorials.  Feel free to leave a comment or question and share with others if you find any of them helpful:
+
+- [Running a Local Web Server](https://dev.to/alexeagleson/understanding-the-modern-web-stack-running-a-local-web-server-4d8g)
+
+- [ESLint](https://dev.to/alexeagleson/understanding-the-modern-web-stack-linters-eslint-59pm)
+
+- [Prettier]()
+
+- [Babel](https://dev.to/alexeagleson/building-a-modern-web-stack-babel-3hfp)
+
+- [React & JSX](https://dev.to/alexeagleson/understanding-the-modern-web-stack-react-with-and-without-jsx-31c7)
+
+- Webpack
+
+    - [The Basics](https://dev.to/alexeagleson/understanding-the-modern-web-stack-webpack-part-1-2mn1)
+
+    - [Loaders, Optimizations & Bundle Analysis](https://dev.to/alexeagleson/understanding-the-modern-web-stack-webpack-part-2-49bj)
+
+    - [DevServer, React & Typescript](https://dev.to/alexeagleson/understanding-the-modern-web-stack-webpack-devserver-react-typescript-4b9b)
+
 ---
 
-links:
-npmrc
-https://docs.npmjs.com/cli/v7/configuring-npm/npmrc
-
-tsconfig docs
-https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+For more tutorials like this, follow me <a href="https://twitter.com/eagleson_alex?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">@eagleson_alex</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> on Twitter
 
 
-token link
-https://github.com/settings/tokens
+

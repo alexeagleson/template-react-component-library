@@ -1,8 +1,12 @@
 import React from "react";
-import './Button.css';
+import "./Button.css";
 
-const Button = () => {
-  return <button>Hello world!</button>;
+interface ButtonProps {
+  label: string;
+}
+
+const Button = (props: ButtonProps) => {
+  return <button>{props.label}</button>;
 };
 
 export default Button;
