@@ -668,7 +668,7 @@ export default [
 ];
 ```
 
-Then we move React from `devDependencies` to `peerDependencies` in our `package.json file:
+Then we move React from `devDependencies` to `peerDependencies` in our `package.json` file:
 
 `package.json`
 ```json
