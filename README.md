@@ -1,4 +1,43 @@
-### Prerequisites & Setup
+
+If you are interested in a video version of this tutorial, check out the above link!  You can follow along with the code in this blog.  
+
+1. [Introduction](#introduction)
+1. [Prerequisites and Setup](#prerequisites-and-setup)
+1. [Creating Components](#creating-components)
+1. [Adding Typescript](#adding-typescript)
+1. [Adding Rollup](#adding-rollup)
+1. [Building Your Library](#building-your-library)
+1. [Publishing Your Library](#publishing-your-library)
+1. [Using Your Library](#using-your-library)
+1. [Adding CSS](#adding-css)
+1. [Optimizing](#optimizing)
+1. [Adding Tests](#adding-tests)
+1. [Adding Storybook](#adding-storybook)
+1. [Wrapping Up](#wrapping-up)
+
+## Introduction
+
+This tutorial will take you through the process of creating and publishing your own custom React component library and hosting it on Github.  
+
+At the end of this tutorial you will have the ability to the following in all of your future React projects:
+
+```bash
+npm install @my-github-account/my-cool-component-library
+```
+
+```jsx
+import MyCustomComponent from '@my-github-account/my-cool-component-library';
+
+const MyApp = () => {
+  return (
+    <div>
+      <MyCustomComponent />
+    </div>
+  )
+}
+```
+
+## Prerequisites and Setup
 
 This project assumes you are familiar with and have installed:
 
@@ -24,7 +63,7 @@ Next we will add add the tools necessary to create our components.
 npm install react typescript @types/react --save-dev
 ```
 
-### Exporting a Component
+## Creating Components
 
 Now we can create our first component.  Because we are creating a library, we are going to create _index_ files for each tier, and export our components from each one to make it as easy as possible for the people using our library to import them.  
 
@@ -85,7 +124,7 @@ And finally, we will export all of our components from the base _src_ directory:
 export * from './components';
 ```
 
-### Configure Typescript
+## Adding Typescript
 
 Up until now, we haven't yet initialized Typescript in our project.  Although you technically don't need a configuration file to use Typescript, for the complexity of building a library we are definitely going to need one.
 
@@ -143,7 +182,7 @@ The values marked _added_ are new values that we need for our project.  We'll br
 
 One you add those values to your TS configuration file you should see the errors in `Button.tsx` and other files immediately disappear.
 
-### Configure Rollup
+## Adding Rollup
 
 Next we will add [rollup](https://rollupjs.org/guide/en/) to our project.  If you've never used rollup before, it's very similar to (webpack)[https://webpack.js.org/] in that it is a tool for bundling individual Javascript modules into a single source that a browser is better able to understand.
 
@@ -212,8 +251,6 @@ The second configuration object defines how our libraries types are distributed 
 
 The final step before we can run our first rollup is to define the values of "main" and "module" in our `package.json` file:
 
-### Configure package.json
-
 `package.json`
 ```json
 {
@@ -254,7 +291,7 @@ The most important changes are as follows:
 * "types" -- We have defined the location for our library's types
 * "scripts" -- We have defined a new script called **rollup**.  This will run the rollup package with the -c flag which means "use the rollup configuration file".  If you're not familiar with _script_ in a `package.json` file, these are simply shorthand commands you can run by name with `npm run {SCRIPTNAME}`.  So to run this one will be `npm run rollup`.
 
-### Running rollup
+## Building your library
 
 With these configurations in place you are now ready to run rollup for the first time and make sure your basic configuration is correct.  Your project structure should look like this before you run:
 
@@ -285,7 +322,7 @@ If everything has been configured correctly rollup will run without error and yo
 
 _(If you received an error make sure to read it closely to try and identify the issue.  Double check that each of your files follows exactly the structure of the examples.  Depending on the amount of time passed since the publishing of this tutorial, new major versions of libraries could potentially be published with breaking changes.  All versions of libraries numbers are visible above in the `package.json` example in the event you need to specify a specific version)_
 
-### Publishing your library
+## Publishing your library
 
 Now that we've created our component library, we need a way to allow ourselves (or others) to download and install it.  We will be publishing our library via NPM through hosting on Github.  First before anything else we need to create a repository for our library.  
 
@@ -374,10 +411,7 @@ Congratulations!  You have now published version 0.0.1 of your React component l
 
 ![Github packages](https://res.cloudinary.com/dqse2txyi/image/upload/v1637015350/packages_nzibj0.png)
 
-
-
-
-### Using your library
+## Using Your Library
 
 Now that your library is live, you'll want to use it!  
 
@@ -449,7 +483,7 @@ If you choose to continue, we will look at how to expand our component library t
 * **Storybook**: For testing our components within the library itself as we design them
 * **React Testing Library & Jest**: For testing our components
 
-### Adding CSS
+## Adding CSS
 
 Before we do any additional configuration, we'll begin by creating a CSS file that will apply some styles to our Button.  Inside of the `Button` directory where our component lives, we'll create a file called: `Button.css`:
 
@@ -569,7 +603,7 @@ And you'll be treated to a giant button component from our library that now supp
 ![Large Button](https://res.cloudinary.com/dqse2txyi/image/upload/v1637028364/template-react-component-library/helloworldbuttonbig_lyapwq.png)
 
 
-### Optimizations
+## Optimizing
 
 There are a couple of easy optimizations we can make with this setup.  The first is to add a plugin called [terser](https://www.npmjs.com/package/rollup-plugin-terser) that will minify our bundle and reduce the overall file size.  
 
@@ -657,7 +691,7 @@ Then we move React from `devDependencies` to `peerDependencies` in our `package.
   ...
 ```
 
-### Adding tests
+## Adding Tests
 
 To add tests for our components we are going to install [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), and to run those tests we will install [Jest](https://jestjs.io/).
 
@@ -766,7 +800,7 @@ And you will be treated to a successful test!
 
 ![Jest test](https://res.cloudinary.com/dqse2txyi/image/upload/v1637096794/template-react-component-library/jest_rw30ou.png)
 
-### Adding Storybook
+## Adding Storybook
 
 Storybook is a a tool for visualizing UI components outside of your site / application.  It's fantastic for prototyping and testing different visual states of components to ensure they work the way they are designed to, without the extra overhead of having other unrelated components on the screen.  
 
@@ -833,7 +867,7 @@ You will be greeted with a friendly interface that lets you navigate through the
 
 There is plenty more to learn about Storybook, make sure to read through the [documentation](https://storybook.js.org/docs/react/get-started/introduction).
 
-### Wrapping Up
+## Wrapping Up
 
 You should now have a good understanding about how to create your own React component library.  Doing so can not only teach you a lot about how the Javascript package management ecosystem works, but it can be a great way to make code that you use across multiple projects easily available with a simple command.
 
