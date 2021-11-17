@@ -1,6 +1,3 @@
-
-If you are interested in a video version of this tutorial, check out the above link!  You can follow along with the code in this blog.  
-
 1. [Introduction](#introduction)
 1. [Prerequisites and Setup](#prerequisites-and-setup)
 1. [Creating Components](#creating-components)
