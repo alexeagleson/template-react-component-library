@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/alexeagleson"
   },
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A simple template for a custom React component library",
   "scripts": {
     "rollup": "rollup -c",
@@ -15,7 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -32,15 +32,11 @@
     "babel-loader": "^8.2.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
+    "react": "^17.0.2",
     "rollup": "^2.60.0",
     "rollup-plugin-dts": "^4.0.1",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
-    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.4.4"
-  },
-  "peerDependencies": {
-    "react": "^17.0.2"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

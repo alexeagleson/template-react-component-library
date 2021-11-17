@@ -184,7 +184,7 @@ One you add those values to your TS configuration file you should see the errors
 
 ## Adding Rollup
 
-Next we will add [rollup](https://rollupjs.org/guide/en/) to our project.  If you've never used rollup before, it's very similar to (webpack)[https://webpack.js.org/] in that it is a tool for bundling individual Javascript modules into a single source that a browser is better able to understand.
+Next we will add [rollup](https://rollupjs.org/guide/en/) to our project.  If you've never used rollup before, it's very similar to [webpack](https://webpack.js.org/) in that it is a tool for bundling individual Javascript modules into a single source that a browser is better able to understand.
 
 Though both tools can accomplish the same goal depending on configuration, typically webpack is used for bundling applications while rollup is particularly suited for bundling libraries (like ours).  That's why we've chosen rollup.
 
