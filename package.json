@@ -1,9 +1,9 @@
 {
-  "name": "@alexeagleson/template-react-component-library",
+  "name": "@YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/alexeagleson"
+    "registry": "https://npm.pkg.github.com/YOUR_REPOSITORY_NAME"
   },
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "A simple template for a custom React component library",
   "scripts": {
     "rollup": "rollup -c",
@@ -11,7 +11,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
-  "author": "Alex Eagleson",
+  "author": "YOUR_NAME",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -43,6 +43,5 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
-  "dependencies": {}
+  "types": "dist/index.d.ts"
 }
