@@ -2,7 +2,7 @@
 
 This project is part of a [blog & video tutorial](https://dev.to/alexeagleson/how-to-create-and-publish-a-react-component-library-2oe) on how to create and publish your own component library.
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/XHQi5a0TmMc/0.jpg)](https://youtu.be/XHQi5a0TmMc)
+[![React Component Library Video Tutorial](https://img.youtube.com/vi/XHQi5a0TmMc/0.jpg)](https://youtu.be/XHQi5a0TmMc)
 
 You can use this repo to fork as a template for your own React library projects.  
 
@@ -52,6 +52,7 @@ npm run build-storybook
 1. [Optimizing](#optimizing)
 1. [Adding Tests](#adding-tests)
 1. [Adding Storybook](#adding-storybook)
+1. [Adding SCSS](#adding-scss)
 1. [Wrapping Up](#wrapping-up)
 
 ## Introduction
@@ -605,7 +606,7 @@ export default [
     plugins: [dts()],
 
     // NEW
-    external: [/\.css$/],
+    external: [/\.(css|less|scss)$/],
   },
 ];
 
@@ -848,8 +849,10 @@ It also gives you an easy way to see and use your components while working on th
 Initializing Storybook is very easy.  To set it up and configure it automatically we just run the following command:
 
 ```bash
-npx sb init
+npx sb init --builder webpack5
 ```
+
+_(Note as of this writing Storybook still defaults to using webpack 4 which is why we have added the extra builder flag. Presumably 5 will be the default soon so it may be unnecessary in the future)_
 
 Unlike some of the other tools we have added so far, Storybook much more of a "batteries included" kind of package that handles most of the initial setup for you.  It will even add the `scripts` to run it into your `package.json` file automatically.
 
@@ -915,6 +918,44 @@ If all goes well you will be greeted with a friendly interface that lets you nav
 ![Storybook example](https://res.cloudinary.com/dqse2txyi/image/upload/v1637099177/template-react-component-library/storybook_dxv3qb.png)
 
 There is plenty more to learn about Storybook, make sure to read through the [documentation](https://storybook.js.org/docs/react/get-started/introduction).
+
+## Adding SCSS
+
+Thanks to `rollup-plugin-postcss` you should already be able to simply rename your `.css` file to `.scss` and then `import 'Button.scss` and be on your way.  Running `num run rollup` will compile it all just fine with the current configuration.
+
+To get it running with Storybook is a different matter however.  Note that this is the main reason we used the `--builder webpack5` flag when installing in the previous section, you will likely encounter a lot of errors trying to configure Storybook to support SCSS with webpack 4.  With version 5 it's fairly simple using the SCSS preset.
+
+_(If you followed an earlier version of this tutorial you may have initialized Storybook with the default webpack 4.  You can remove anything related to Storybook from your `package.json` file.  Next delete your `package-lock.json` and `/node_modules/` directory and initialize Storybook again with the `--builder webpack5` flag)_.
+
+```bash
+npm install @storybook/preset-scss css-loader sass sass-loader style-loader --save-dev
+```
+
+_(If you'd like to understand more about the difference between what these different loaders do, here is a great answer on [Stack Overflow](https://stackoverflow.com/a/43953484))_
+
+Then all you need to do is add `@storybook/preset-scss` to your main Storybook config:
+
+`.storybook/main.js`
+```js
+module.exports = {
+  "stories": [
+    "../src/**/*.stories.mdx",
+    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/preset-scss"
+  ],
+  "core": {
+    "builder": "webpack5"
+  }
+}
+```
+
+Now you will be able to run `npm run storybook` and see all your SCSS styles.
+
+To read more on different kinds of CSS support and Storybook click [here](https://storybook.js.org/docs/react/configure/styling-and-css).
 
 ## Wrapping Up
 
